@@ -1,5 +1,4 @@
 from flask import Flask,request,jsonify
-import pandas as pd
 import numpy as np
 
 import tensorflow as tf
@@ -7,9 +6,19 @@ import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer,glue_convert_examples_to_features, InputExample,BertConfig,InputFeatures
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
+import gdown
+import zipfile
+
+
+url = 'https://drive.google.com/uc?id=1-7dj0Yx6MTQ0ZqrHzxQ8sNrt11-31-TY'
+output = 'eng.zip'
+gdown.download(url, 'output', quiet=False)
+
+with zipfile.ZipFile("output","r") as zip_ref:
+    zip_ref.extractall("model")
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
-sentiment_model = TFBertForSequenceClassification.from_pretrained('eng')
+sentiment_model = TFBertForSequenceClassification.from_pretrained('model/eng') 
 def example_to_features_predict(input_ids, attention_masks, token_type_ids):
     """
         Convert the test examples into Bert compatible format.
